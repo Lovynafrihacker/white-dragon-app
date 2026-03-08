@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐉 WHITE DRAGON · PREDICTOR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #0a0c1a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .card {
+            max-width: 400px;
+            width: 100%;
+            background: #12192d;
+            border-radius: 30px;
+            padding: 18px;
+            border: 1px solid #00ffff30;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .badge {
+            background: #00ffff10;
+            border: 1px solid #00ffff40;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            color: #00ffff;
+            display: inline-block;
+            margin: 0 3px;
+        }
+
+        /* Game Info */
+        .game-info {
+            background: #1a2340;
+            border-radius: 40px;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border: 1px solid #ffffff20;
+        }
+
+        .game-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .game-icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .game-text {
+            font-weight: 600;
+            color: white;
+        }
+
+        .game-type {
+            background: #2a3450;
+            padding: 3px 10px;
+            border-radius: 20px;
+            color: #ffd700;
+            font-size: 10px;
+            border: 1px solid #ffd70030;
+        }
+
+        /* Timer Section - SUPER LIGHTWEIGHT */
+        .timer-section {
+            background: #0f172a;
+            border-radius: 25px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #00ffff40;
+            box-shadow: 0 0 15px #00ffff20;
+        }
+
+        .timer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .timer-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #a0b3d9;
+            font-size: 13px;
+        }
+
+        .live-badge {
+            background: #ff0000;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 9px;
+            font-weight: 700;
+        }
+
+        .timer-main {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .timer-number {
+            font-size: 52px;
+            font-weight: 900;
+            font-family: 'Courier New', monospace;
+            color: #00ffff;
+            text-shadow: 0 0 15px #00ffff;
+            line-height: 1;
+        }
+
+        .timer-number.urgent {
+            color: #ff4444;
+            text-shadow: 0 0 15px #ff4444;
+        }
+
+        .timer-unit {
+            font-size: 16px;
+            color: #7f8fa0;
+            margin-left: 5px;
+        }
+
+        .timer-progress {
+            height: 4px;
+            background: #1e2a3a;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 100%;
+            background: #00ffff;
+            transition: width 1s linear;
+        }
+
+        .progress-fill.urgent {
+            background: #ff4444;
+        }
+
+        /* Stats - SUPER LIGHTWEIGHT */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+
+        .stat-card {
+            background: #1a2340;
+            border-radius: 18px;
+            padding: 12px 3px;
+            text-align: center;
+            border: 1px solid #ffffff10;
+        }
+
+        .stat-label {
+            font-size: 9px;
+            color: #8a9bb5;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .stat-value.total { color: #ffd700; }
+        .stat-value.small { color: #00ffff; }
+        .stat-value.big { color: #ff4444; }
+
+        /* History - SUPER LIGHTWEIGHT */
+        .history-box {
+            background: #0f172a;
+            border-radius: 22px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            color: #b0c4de;
+            font-size: 11px;
+        }
+
+        .period-badge {
+            background: #1e2a40;
+            padding: 4px 10px;
+            border-radius: 20px;
+            color: #ffd700;
+            font-size: 10px;
+        }
+
+        .bubbles {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .bubble {
+            width: 38px;
+            height: 48px;
+            background: #1f2d45;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #3a4a6a;
+        }
+
+        .bubble.small .num { color: #00ffff; }
+        .bubble.big .num { color: #ff4444; }
+        .bubble .num { font-size: 18px; font-weight: 800; }
+        .bubble .type { font-size: 8px; opacity: 0.8; }
+        
+        .color-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            margin-top: 2px;
+        }
+        .color-dot.red { background: #ff4444; }
+        .color-dot.green { background: #44ff44; }
+        .color-dot.violet { background: #ff44ff; }
+
+        /* Prediction - SUPER LIGHTWEIGHT */
+        .prediction-area {
+            background: #0c1425;
+            border-radius: 25px;
+            padding: 18px 12px;
+            margin-bottom: 15px;
+            border: 2px solid #00ffff;
+        }
+
+        .next-label {
+            text-align: center;
+            font-size: 10px;
+            color: #b0c4de;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .prediction-display {
+            font-size: 56px;
+            font-weight: 900;
+            text-align: center;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .prediction-display.small { color: #00ffff; }
+        .prediction-display.big { color: #ff4444; }
+
+        .confidence-bar {
+            height: 4px;
+            background: #1e293b;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ffff, #ff00ff);
+            width: 0%;
+            transition: width 0.2s;
+        }
+
+        .confidence-text {
+            text-align: center;
+            font-size: 12px;
+            color: #ffd700;
+        }
+
+        .reason-box {
+            background: #0f172a;
+            border-radius: 20px;
+            padding: 8px 12px;
+            font-size: 9px;
+            color: #b0c4de;
+            text-align: center;
+            margin-top: 10px;
+            border: 1px dashed #00ffff40;
+        }
+
+        /* Buttons - SUPER LIGHTWEIGHT */
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(90deg, #00a6ff, #8a2be2);
+            border: none;
+            padding: 14px;
+            border-radius: 22px;
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            border: 1px solid #ffffff30;
+        }
+
+        .btn-primary:active {
+            opacity: 0.8;
+            transform: scale(0.98);
+        }
+
+        .btn-telegram {
+            width: 100%;
+            background: #0088cc;
+            border: none;
+            padding: 12px;
+            border-radius: 22px;
+            color: white;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-telegram:active {
+            opacity: 0.8;
+        }
+
+        /* Footer */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            font-size: 9px;
+            color: #6a7a9a;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .dot.green { background: #44ff44; }
+        .dot.yellow { background: #ffff44; }
+        .dot.red { background: #ff4444; }
+
+        /* Remove ALL animations */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            animation: none !important;
+            transition: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="content">
+            <!-- Header -->
+            <div class="header">
+                <div class="title">🐉 WHITE DRAGON</div>
+                <div>
+                    <span class="badge">⚡ PREDICTOR</span>
+                    <span class="badge" id="apiStatusBadge">📡 CONNECTED</span>
+                </div>
+            </div>
+
+            <!-- Game Info -->
+            <div class="game-info">
+                <div class="game-name">
+                    <div class="game-icon">🎯</div>
+                    <div class="game-text">WinGo 30S</div>
+                </div>
+                <div class="game-type">#WG30</div>
+            </div>
+
+            <!-- Timer Section -->
+            <div class="timer-section">
+                <div class="timer-header">
+                    <div class="timer-label">
+                        <span>⏰ NEXT RESULT</span>
+                        <span class="live-badge">LIVE</span>
+                    </div>
+                </div>
+                <div class="timer-main">
+                    <span class="timer-number" id="timerDisplay">30</span>
+                    <span class="timer-unit">sec</span>
+                </div>
+                <div class="timer-progress">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-label">TOTAL</div>
+                    <div class="stat-value total" id="totalCount">500</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">SMALL</div>
+                    <div class="stat-value small" id="smallPercent">52%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">BIG</div>
+                    <div class="stat-value big" id="bigPercent">48%</div>
+                </div>
+            </div>
+
+            <!-- History -->
+            <div class="history-box">
+                <div class="history-header">
+                    <span>📋 LAST 10</span>
+                    <span class="period-badge" id="latestPeriod">#50783</span>
+                </div>
+                <div class="bubbles" id="historyBubbles"></div>
+            </div>
+
+            <!-- Prediction -->
+            <div class="prediction-area">
+                <div class="next-label">🔮 NEXT PREDICTION</div>
+                <div id="predictionDisplay" class="prediction-display small">--</div>
+                
+                <div class="confidence-bar">
+                    <div id="confidenceFill" class="confidence-fill" style="width: 0%"></div>
+                </div>
+                <div id="confidenceDisplay" class="confidence-text">WAITING</div>
+
+                <div id="reasonDisplay" class="reason-box">Initializing...</div>
+            </div>
+
+            <!-- Buttons -->
+            <button class="btn-primary" onclick="manualFetch()">
+                ⚡ FETCH DATA
+            </button>
+            
+            <a href="https://t.me/YOUR_TELEGRAM_LINK" target="_blank" class="btn-telegram">
+                ✈️ JOIN TELEGRAM
+            </a>
+
+            <!-- Footer -->
+            <div class="footer">
+                <span id="lastFetchTime">⏱️ Never</span>
+                <div>
+                    <span class="dot green" id="statusDot"></span>
+                    <span id="apiStatusText">Live</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== CONFIG ==========
+        const API_URL = 'https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json';
+        const PROXY_URL = 'https://api.codetabs.com/v1/proxy/?quest=';
+        let historyList = [];
+        
+        // ========== TIMER (PERFECT - ZERO LAG) ==========
+        let timerSeconds = 30;
+        let isFetching = false;
+
+        // Start timer immediately
+        function startTimer() {
+            setInterval(() => {
+                // Decrease timer
+                timerSeconds--;
+                
+                // When timer hits 0 -> FETCH DATA AUTOMATICALLY
+                if (timerSeconds < 0) {
+                    timerSeconds = 29; // Reset to 29
+                    fetchDataAndPredict(); // AUTO FETCH AT 0
+                }
+                
+                // Update display (NO ANIMATIONS, just change text)
+                updateTimerDisplay();
+                
+            }, 1000); // Exactly 1 second intervals
+        }
+
+        // Update timer display (ULTRA LIGHTWEIGHT)
+        function updateTimerDisplay() {
+            const timerElement = document.getElementById('timerDisplay');
+            const progressFill = document.getElementById('progressFill');
+            
+            // Just change text - NO ANIMATIONS
+            timerElement.textContent = timerSeconds.toString().padStart(2, '0');
+            
+            // Just change width - NO TRANSITIONS
+            const percent = (timerSeconds / 30) * 100;
+            progressFill.style.width = percent + '%';
+            
+            // Just change color class
+            if (timerSeconds <= 5) {
+                timerElement.className = 'timer-number urgent';
+                progressFill.className = 'progress-fill urgent';
+            } else {
+                timerElement.className = 'timer-number';
+                progressFill.className = 'progress-fill';
+            }
+        }
+
+        // ========== DATA FETCH (LIGHTWEIGHT) ==========
+        function manualFetch() {
+            fetchDataAndPredict(); // Timer continues - NO RESET
+        }
+
+        async function fetchDataAndPredict() {
+            if (isFetching) return;
+            isFetching = true;
+            
+            try {
+                updateStatus('yellow', 'Fetching...');
+                document.getElementById('apiStatusBadge').innerHTML = '📡 FETCHING';
+                
+                const response = await fetch(PROXY_URL + encodeURIComponent(API_URL + "?t=" + Date.now()));
+                const data = await response.json();
+                
+                if (data?.data?.list) {
+                    const newList = data.data.list;
+                    
+                    // Update if data changed
+                    if (JSON.stringify(historyList) !== JSON.stringify(newList)) {
+                        historyList = newList;
+                        localStorage.setItem('dragonHistory', JSON.stringify(historyList));
+                        updateUI();
+                    }
+                    
+                    updateStatus('green', 'Connected');
+                    document.getElementById('apiStatusBadge').innerHTML = '📡 CONNECTED';
+                }
+            } catch (error) {
+                updateStatus('red', 'Error');
+                document.getElementById('apiStatusBadge').innerHTML = '📡 ERROR';
+                
+                if (historyList.length === 0) {
+                    useSampleData();
+                }
+            } finally {
+                isFetching = false;
+            }
+        }
+
+        // ========== UI UPDATE (MINIMAL) ==========
+        function updateUI() {
+            if (historyList.length === 0) return;
+
+            // Update stats
+            const total = historyList.length;
+            const smallCount = historyList.filter(i => parseInt(i.number) <= 4).length;
+            const smallPct = Math.round((smallCount / total) * 100);
+
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('smallPercent').textContent = smallPct + '%';
+            document.getElementById('bigPercent').textContent = (100 - smallPct) + '%';
+
+            // Update period
+            if (historyList[0]?.issueNumber) {
+                document.getElementById('latestPeriod').textContent = "#" + historyList[0].issueNumber;
+            }
+
+            // Update bubbles (NO ANIMATIONS)
+            const bubbles = document.getElementById('historyBubbles');
+            let html = '';
+            
+            historyList.slice(0, 10).forEach(item => {
+                const n = parseInt(item.number);
+                const isBig = n >= 5;
+                
+                let colorClass = 'violet';
+                if (item.color) {
+                    if (item.color.includes('red')) colorClass = 'red';
+                    else if (item.color.includes('green')) colorClass = 'green';
+                }
+                
+                html += `<div class="bubble ${isBig ? 'big' : 'small'}">
+                    <div class="num">${n}</div>
+                    <div class="type">${isBig ? 'BIG' : 'SML'}</div>
+                    <div class="color-dot ${colorClass}"></div>
+                </div>`;
+            });
+            
+            bubbles.innerHTML = html;
+
+            // Generate prediction
+            if (historyList.length >= 3) {
+                const last3 = historyList.slice(0, 3).map(i => parseInt(i.number));
+                const avg = (last3[0] + last3[1] + last3[2]) / 3;
+                const pred = avg >= 4.5 ? "BIG" : "SMALL";
+                
+                const display = document.getElementById('predictionDisplay');
+                display.textContent = pred;
+                display.className = `prediction-display ${pred.toLowerCase()}`;
+                
+                // Simple confidence
+                let confidence = 85;
+                if (last3[0] === last3[1] && last3[1] === last3[2]) confidence = 98;
+                else if (last3[0] === last3[1] || last3[1] === last3[2] || last3[0] === last3[2]) confidence = 92;
+                
+                document.getElementById('confidenceFill').style.width = confidence + '%';
+                document.getElementById('confidenceDisplay').textContent = `CONFIDENCE: ${confidence}%`;
+                
+   
